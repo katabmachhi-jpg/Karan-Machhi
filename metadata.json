@@ -1,0 +1,6 @@
+{
+  "name": "MYRA AI",
+  "description": "Smart voice-controlled personal AI assistant supporting Hindi, Gujarati, Hinglish, and English with real device tool controls.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

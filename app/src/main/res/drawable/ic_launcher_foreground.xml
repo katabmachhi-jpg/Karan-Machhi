@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    
+    <!-- Outer Sonic Glow Brackets -->
+    <path
+        android:pathData="M34,42 C30,49 30,59 34,66"
+        android:strokeWidth="3.5"
+        android:strokeColor="#7C4DFF"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000" />
+    <path
+        android:pathData="M27,37 C21,47 21,61 27,71"
+        android:strokeWidth="2.5"
+        android:strokeColor="#00E5FF"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000" />
+
+    <path
+        android:pathData="M74,42 C78,49 78,59 74,66"
+        android:strokeWidth="3.5"
+        android:strokeColor="#7C4DFF"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000" />
+    <path
+        android:pathData="M81,37 C87,47 87,61 81,71"
+        android:strokeWidth="2.5"
+        android:strokeColor="#00E5FF"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000" />
+
+    <!-- Central Glowing Core Orb -->
+    <path
+        android:pathData="M54,34 C43,34 34,43 34,54 C34,65 43,74 54,74 C65,74 74,65 74,54 C74,43 65,34 54,34 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="34"
+                android:startY="34"
+                android:endX="74"
+                android:endY="74"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#00E5FF" />
+                <item android:offset="0.5" android:color="#7C4DFF" />
+                <item android:offset="1.0" android:color="#FF4081" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Inner Core Voice Wave / Microphone Silhouette -->
+    <!-- Voice Wave Bars inside core -->
+    <path
+        android:pathData="M44,50 L44,58 M49,46 L49,62 M54,42 L54,66 M59,46 L59,62 M64,50 L64,58"
+        android:strokeWidth="2.5"
+        android:strokeColor="#FFFFFF"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000" />
+
+    <!-- AI Sparkle on upper right -->
+    <path
+        android:pathData="M71,32 Q71,38 77,38 Q71,38 71,44 Q71,38 65,38 Q71,38 71,32 Z"
+        android:fillColor="#FFD54F" />
+
+</vector>
