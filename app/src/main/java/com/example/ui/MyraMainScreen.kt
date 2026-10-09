@@ -90,12 +90,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
+import com.example.R
 import com.example.model.ChatMessage
 import com.example.model.LanguageType
 import com.example.model.ToolActionResult
@@ -130,11 +132,15 @@ fun MyraMainScreen(viewModel: MyraViewModel) {
     var showVoiceStyleSheet by remember { mutableStateOf(false) }
     val voiceStyleSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
+    var showGitHubSheet by remember { mutableStateOf(false) }
+    val githubSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
     val connectedTools by viewModel.connectedTools.collectAsState()
     val isMuted by viewModel.isMuted.collectAsState()
     val speechRate by viewModel.speechRate.collectAsState()
     val pitch by viewModel.pitch.collectAsState()
     val currentLanguage by viewModel.currentLanguage.collectAsState()
+    val githubRepoUrl by viewModel.githubRepoUrl.collectAsState()
 
     // Handle Android system back button when on sub-screens
     BackHandler(enabled = currentTab != AppTab.VOICE_ASSISTANT) {
@@ -193,6 +199,19 @@ fun MyraMainScreen(viewModel: MyraViewModel) {
                             imageVector = Icons.Default.RecordVoiceOver,
                             contentDescription = "Voice Style Tuning",
                             tint = NeonCyan
+                        )
+                    }
+
+                    // GitHub & Download Link button
+                    IconButton(
+                        onClick = { showGitHubSheet = true },
+                        modifier = Modifier.testTag("open_github_sheet_button")
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_github),
+                            contentDescription = "GitHub & Download Link",
+                            tint = Color.White,
+                            modifier = Modifier.size(20.dp)
                         )
                     }
 
@@ -332,6 +351,12 @@ fun MyraMainScreen(viewModel: MyraViewModel) {
                 isFlashlightOn = viewModel.deviceTools.getFlashlightState(),
                 onToggleFlashlight = { viewModel.toggleFlashlight() },
                 onTestBattery = { viewModel.processCommand("battery kitni hai") },
+                onOpenGitHub = {
+                    scope.launch { sheetState.hide() }.invokeOnCompletion {
+                        showToolsSheet = false
+                        showGitHubSheet = true
+                    }
+                },
                 onDismiss = {
                     scope.launch { sheetState.hide() }.invokeOnCompletion {
                         showToolsSheet = false
@@ -353,6 +378,23 @@ fun MyraMainScreen(viewModel: MyraViewModel) {
                 onDismiss = {
                     scope.launch { voiceStyleSheetState.hide() }.invokeOnCompletion {
                         showVoiceStyleSheet = false
+                    }
+                }
+            )
+        }
+
+        // GitHub & Download Link Sheet
+        if (showGitHubSheet) {
+            GitHubDownloadSheet(
+                sheetState = githubSheetState,
+                currentRepoUrl = githubRepoUrl,
+                onOpenRepo = { viewModel.openGitHubRepo() },
+                onOpenReleases = { viewModel.openGitHubReleases() },
+                onDownloadSourceZip = { viewModel.downloadSourceZip() },
+                onUpdateRepoUrl = { viewModel.updateGithubRepoUrl(it) },
+                onDismiss = {
+                    scope.launch { githubSheetState.hide() }.invokeOnCompletion {
+                        showGitHubSheet = false
                     }
                 }
             )
@@ -413,8 +455,10 @@ private fun VoiceAssistantScreen(viewModel: MyraViewModel) {
     val quickCommands = listOf(
         "YouTube kholo",
         "Flashlight on karo",
+        "GitHub download link",
         "Mujhe ek AI app ka idea do",
         "Gujarati ma vaat karo",
+        "GitHub kholo",
         "WhatsApp kholo",
         "Camera shuru karo",
         "Flashlight band karo",

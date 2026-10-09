@@ -278,6 +278,48 @@ class LocalCommandEngine(private val deviceToolManager: DeviceToolManager) {
             }
         }
 
+        // 11. GitHub & Download Links: "GitHub kholo", "GitHub download link", "Download link"
+        val isGitHubQuery = lower.contains("github") || lower.contains("git hub") ||
+                (lower.contains("download") && (lower.contains("link") || lower.contains("apk") || lower.contains("code") || lower.contains("repo") || lower.contains("app")))
+
+        if (isGitHubQuery) {
+            val isDownloadSpecific = lower.contains("download") || lower.contains("release") || lower.contains("apk") || lower.contains("zip")
+            val toolResult = if (lower.contains("zip") || lower.contains("source")) {
+                deviceToolManager.downloadSourceCode()
+            } else if (isDownloadSpecific) {
+                deviceToolManager.openGitHubReleases()
+            } else {
+                deviceToolManager.openGitHub()
+            }
+
+            val response = if (toolResult.isSuccess) {
+                if (isDownloadSpecific) {
+                    when (lang) {
+                        LanguageType.GUJARATI -> "હું GitHub APK ડાઉનલોડ પેજ ખોલી રહી છું."
+                        LanguageType.HINDI -> "मैं GitHub APK डाउनलोड पेज खोल रही हूँ।"
+                        LanguageType.HINGLISH -> "Main GitHub download page open kar rahi hoon."
+                        LanguageType.ENGLISH -> "Opening GitHub APK download page."
+                    }
+                } else {
+                    when (lang) {
+                        LanguageType.GUJARATI -> "હું GitHub રિપોઝિટરી ખોલી રહી છું."
+                        LanguageType.HINDI -> "मैं GitHub रिपॉजिटरी खोल रही हूँ।"
+                        LanguageType.HINGLISH -> "Main GitHub repository open kar rahi hoon."
+                        LanguageType.ENGLISH -> "Opening GitHub repository."
+                    }
+                }
+            } else {
+                "GitHub tool is not available."
+            }
+
+            return CommandEvaluation(
+                handledLocally = true,
+                responseText = response,
+                toolResult = toolResult,
+                detectedLanguage = lang
+            )
+        }
+
         // Not handled by direct local hardware/app triggers -> pass to Gemini AI Service
         return null
     }

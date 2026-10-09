@@ -28,4 +28,9 @@ class ExampleUnitTest {
         assertTrue(AppTab.entries.contains(AppTab.CREATIVE_STUDIO))
         assertTrue(AppTab.entries.contains(AppTab.TRANSCRIBER))
     }
+
+    @Test
+    fun testGitHubDefaultUrl() {
+        assertEquals("https://github.com/katabmachhi/myra-ai", com.example.tools.DeviceToolManager.DEFAULT_GITHUB_URL)
+    }
 }

@@ -246,6 +246,10 @@ class DeviceToolManager(private val context: Context) {
                 }
             }
 
+            cleanTarget.contains("github") || cleanTarget.contains("git hub") -> {
+                return openGitHub()
+            }
+
             else -> {
                 // Try to find matching installed application
                 val installedPackages = pm.getInstalledApplications(PackageManager.GET_META_DATA)
@@ -316,10 +320,37 @@ class DeviceToolManager(private val context: Context) {
         }
     }
 
+    fun openGitHub(repoUrl: String = DEFAULT_GITHUB_URL): ToolActionResult {
+        return openUrl(repoUrl, "Open GitHub", "GitHub repository opened: $repoUrl")
+    }
+
+    fun openGitHubReleases(repoUrl: String = DEFAULT_GITHUB_URL): ToolActionResult {
+        val releasesUrl = if (repoUrl.endsWith("/")) "${repoUrl}releases" else "$repoUrl/releases"
+        return openUrl(releasesUrl, "GitHub Releases", "GitHub Releases & APK download page opened")
+    }
+
+    fun downloadSourceCode(repoUrl: String = DEFAULT_GITHUB_URL): ToolActionResult {
+        val zipUrl = if (repoUrl.endsWith("/")) "${repoUrl}archive/refs/heads/main.zip" else "$repoUrl/archive/refs/heads/main.zip"
+        return openUrl(zipUrl, "Download Source Code", "Downloading source code ZIP from GitHub")
+    }
+
+    fun openUrl(url: String, actionTitle: String = "Open Link", successMsg: String = "Link opened in browser"): ToolActionResult {
+        return try {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+            context.startActivity(intent)
+            ToolActionResult(actionTitle, true, successMsg, "github")
+        } catch (e: Exception) {
+            ToolActionResult(actionTitle, false, "Could not open link: ${e.message}", "github")
+        }
+    }
+
     fun getConnectedToolsInfo(): List<ConnectedToolInfo> {
         val hasFlash = isFlashlightAvailable()
         return listOf(
             ConnectedToolInfo("App Opening Tool", true, "Launches YouTube, WhatsApp, Camera, Maps, Settings, and installed apps via Android Intent Manager"),
+            ConnectedToolInfo("GitHub & Downloads Tool", true, "Direct access to GitHub repo, releases, APK downloads, and source code"),
             ConnectedToolInfo("Flashlight Control", hasFlash, if (hasFlash) "Hardware Camera Flash connected & ready" else "Device flash hardware not detected"),
             ConnectedToolInfo("Web Search Tool", true, "Google Web Search connected"),
             ConnectedToolInfo("Device Battery Status", true, "Real-time battery level and power telemetry connected"),
@@ -327,6 +358,10 @@ class DeviceToolManager(private val context: Context) {
             ConnectedToolInfo("Text-to-Speech", true, "Multi-language Android TTS engine (Hindi, Gujarati, English) connected"),
             ConnectedToolInfo("Gemini AI Engine", true, "Connected for natural multi-turn conversations and reasoning")
         )
+    }
+
+    companion object {
+        const val DEFAULT_GITHUB_URL = "https://github.com/katabmachhi/myra-ai"
     }
 }
 

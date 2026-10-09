@@ -24,6 +24,8 @@ import androidx.compose.material.icons.filled.FlashlightOn
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Shield
 import androidx.compose.material.icons.filled.Warning
+import androidx.compose.ui.res.painterResource
+import com.example.R
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
@@ -63,6 +65,7 @@ fun ToolsStatusSheet(
     isFlashlightOn: Boolean,
     onToggleFlashlight: () -> Unit,
     onTestBattery: () -> Unit,
+    onOpenGitHub: (() -> Unit)? = null,
     onDismiss: () -> Unit
 ) {
     ModalBottomSheet(
@@ -190,7 +193,28 @@ fun ToolsStatusSheet(
                         tint = NeonCyan
                     )
                     Spacer(modifier = Modifier.width(6.dp))
-                    Text(text = "Check Battery", fontSize = 12.sp)
+                    Text(text = "Battery", fontSize = 12.sp)
+                }
+
+                if (onOpenGitHub != null) {
+                    FilledTonalButton(
+                        onClick = onOpenGitHub,
+                        colors = ButtonDefaults.filledTonalButtonColors(
+                            containerColor = MidnightCard,
+                            contentColor = TextPrimary
+                        ),
+                        shape = RoundedCornerShape(10.dp),
+                        modifier = Modifier.weight(1f).testTag("quick_open_github")
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_github),
+                            contentDescription = null,
+                            modifier = Modifier.size(16.dp),
+                            tint = Color.White
+                        )
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text(text = "GitHub", fontSize = 12.sp)
+                    }
                 }
             }
 

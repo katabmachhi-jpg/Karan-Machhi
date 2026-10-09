@@ -117,6 +117,10 @@ class MyraViewModel(application: Application) : AndroidViewModel(application) {
     private val _transcriptionResult = MutableStateFlow<TranscriptionResult?>(null)
     val transcriptionResult: StateFlow<TranscriptionResult?> = _transcriptionResult.asStateFlow()
 
+    // 7. GitHub & Download Links State
+    private val _githubRepoUrl = MutableStateFlow(DeviceToolManager.DEFAULT_GITHUB_URL)
+    val githubRepoUrl: StateFlow<String> = _githubRepoUrl.asStateFlow()
+
     // Speech Flow Shortcuts
     val isListening: StateFlow<Boolean> = voiceRecognizer.isListening
     val isSpeaking: StateFlow<Boolean> = speechSynthesis.isSpeaking
@@ -447,6 +451,45 @@ class MyraViewModel(application: Application) : AndroidViewModel(application) {
 
     fun clearChatbotHistory() {
         _chatMessages.value = emptyList()
+    }
+
+    // GitHub & Download Link Actions
+    fun updateGithubRepoUrl(url: String) {
+        val clean = url.trim()
+        if (clean.isNotBlank()) {
+            _githubRepoUrl.value = clean
+        }
+    }
+
+    fun openGitHubRepo() {
+        val result = deviceTools.openGitHub(_githubRepoUrl.value)
+        _lastToolResult.value = result
+    }
+
+    fun openGitHubReleases() {
+        val result = deviceTools.openGitHubReleases(_githubRepoUrl.value)
+        _lastToolResult.value = result
+    }
+
+    fun downloadSourceZip() {
+        val result = deviceTools.downloadSourceCode(_githubRepoUrl.value)
+        _lastToolResult.value = result
+    }
+
+    fun getReleasesUrl(): String {
+        val base = _githubRepoUrl.value
+        return if (base.endsWith("/")) "${base}releases" else "$base/releases"
+    }
+
+    fun getSourceZipUrl(): String {
+        val base = _githubRepoUrl.value
+        return if (base.endsWith("/")) "${base}archive/refs/heads/main.zip" else "$base/archive/refs/heads/main.zip"
+    }
+
+    fun getCloneCommand(): String {
+        val base = _githubRepoUrl.value.removeSuffix("/")
+        val repo = if (base.endsWith(".git")) base else "$base.git"
+        return "git clone $repo"
     }
 
     override fun onCleared() {

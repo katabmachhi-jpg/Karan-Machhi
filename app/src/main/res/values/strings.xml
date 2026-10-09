@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">MYRA AI</string>
+    <string name="github_download_title">GitHub &amp; Download Link</string>
+    <string name="github_repo_url">https://github.com/katabmachhi/myra-ai</string>
+    <string name="github_download_apk">Download Latest APK</string>
+    <string name="github_download_source">Download Source Code</string>
+    <string name="github_view_repo">View on GitHub</string>
 </resources>
